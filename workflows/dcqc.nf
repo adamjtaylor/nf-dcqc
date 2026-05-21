@@ -76,14 +76,13 @@ workflow DCQC {
 
     ch_summary = PREPARE_REPORTS(ch_tests_computed, ch_input)
 
-    // Generate MultiQC report from suites.json
-    ch_multiqc_config = Channel.fromPath("$projectDir/multiqc/multiqc_config.yaml", checkIfExists: true)
-    ch_multiqc_plugin = Channel.fromPath("$projectDir/multiqc", checkIfExists: true, type: 'dir')
+    // Generate MultiQC report from suites.json. The dcqc_validation plugin
+    // ships in the py-dcqc container via the `multiqc.modules.v1` entry point.
+    ch_multiqc_config = Channel.fromPath("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
 
     MULTIQC(
         ch_summary,
-        ch_multiqc_config,
-        ch_multiqc_plugin
+        ch_multiqc_config
     )
 
 }
